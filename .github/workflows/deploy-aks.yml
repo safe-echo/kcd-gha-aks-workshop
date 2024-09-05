@@ -10,7 +10,7 @@ permissions:
 env:
    RESOURCE_GROUP: safe-echo-test
    AKS_CLUSTER_NAME: safe-echo-cluster
-   LOCATION: australiasoutheast
+   LOCATION: asiasoutheast
 
 jobs:
   build:
