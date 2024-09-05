@@ -42,7 +42,10 @@ jobs:
     - name: Create Resource Group
       run: |
         az group create --name $RESOURCE_GROUP --location $LOCATION
-        az provider register --namespace Microsoft.Cdn
+        az provider list --query "[?registrationState=='Registered']" --output table
+        az provider register --namespace microsoft.insights
+        az provider show --namespace Microsoft.Web --query "resourceTypes[?resourceType=='sites'].locations"
+
 
 
     - name: Create AKS Cluster
