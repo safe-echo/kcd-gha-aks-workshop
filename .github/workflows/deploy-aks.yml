@@ -44,9 +44,8 @@ jobs:
         az group create --name $RESOURCE_GROUP --location $LOCATION
         az provider list --query "[?registrationState=='Registered']" --output table
         az provider register --namespace microsoft.insights
+        az provider register --namespace Microsoft.ContainerService
         az provider show --namespace Microsoft.Web --query "resourceTypes[?resourceType=='sites'].locations"
-
-
 
     - name: Create AKS Cluster
       run: |
