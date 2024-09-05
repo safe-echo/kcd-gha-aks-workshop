@@ -42,6 +42,8 @@ jobs:
     - name: Create Resource Group
       run: |
         az group create --name $RESOURCE_GROUP --location $LOCATION
+        az provider register --namespace Microsoft.Cdn
+
 
     - name: Create AKS Cluster
       run: |
