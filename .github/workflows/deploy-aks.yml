@@ -1,0 +1,60 @@
+name: Deploy AKS
+
+on:
+  pull_request:
+
+permissions:
+  id-token: write # Required for OIDC authentication
+  contents: read # Required to read repository contents
+
+env:
+   RESOURCE_GROUP: safe-echo-test3
+   AKS_CLUSTER_NAME: safe-echo-cluster
+   LOCATION: southeastasia
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout the code
+      uses: actions/checkout@v2
+
+    - name: Azure Login
+      uses: azure/login@v2
+      with:
+        client-id: ${{ secrets.AZURE_CLIENT_ID }}
+        tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+        subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+        enable-AzPSSession: true
+
+    # Do I have to setup kubectl with zxure action specifically
+    - name: Set up Kubernetes tools
+      uses: azure/setup-kubectl@v3
+      with:
+        version: 'latest'
+
+    - name: Set up Helm
+      uses: azure/setup-helm@v1
+      with:
+        version: 'latest'
+
+    - name: Create Resource Group
+      run: |
+        az group create --name $RESOURCE_GROUP --location $LOCATION
+        az provider list --query "[?registrationState=='Registered']" --output table
+        az provider register --namespace microsoft.insights
+        az provider register --namespace Microsoft.ContainerService
+        az provider show --namespace Microsoft.Web --query "resourceTypes[?resourceType=='sites'].locations"
+
+    - name: Create AKS Cluster
+      run: |
+        az aks create --resource-group $RESOURCE_GROUP --name $AKS_CLUSTER_NAME --node-count 1 --enable-addons monitoring --generate-ssh-keys
+
+    - name: Get AKS Credentials
+      run: |
+        az aks get-credentials --resource-group $RESOURCE_GROUP --name $AKS_CLUSTER_NAME
+
+    - name: Deploy to AKS
+      run: |
+        kubectl apply -f k8s/deployment.yml
