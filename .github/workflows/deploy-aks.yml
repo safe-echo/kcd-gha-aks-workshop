@@ -8,9 +8,9 @@ permissions:
   contents: read # Required to read repository contents
 
 env:
-   RESOURCE_GROUP: safe-echo-nice
+   RESOURCE_GROUP: safe-echo-test2
    AKS_CLUSTER_NAME: safe-echo-cluster
-   LOCATION: australiacentral2
+   LOCATION: canadacentral
 
 jobs:
   build:
