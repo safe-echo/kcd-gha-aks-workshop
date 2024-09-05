@@ -8,7 +8,7 @@ permissions:
   contents: read # Required to read repository contents
 
 env:
-   RESOURCE_GROUP: safe-echo-resource
+   RESOURCE_GROUP: safe-echo-test
    AKS_CLUSTER_NAME: safe-echo-cluster
    LOCATION: australiasoutheast
 
